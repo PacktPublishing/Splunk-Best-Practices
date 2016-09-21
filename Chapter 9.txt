@@ -1,0 +1,129 @@
+Chapter 9:
+
+9.1.2.2.2.1
+That will launch the following search:
+eventtype="perfmon_windows" (Host="*") Host="*" object="Processor"
+counter="% C1 Time" instance="*"
+| stats sparkline(avg(Value)) as Trend avg(Value) as Average, max(Value) as
+Peak, latest(Value) as Current, latest(_time) as "Last Updated" by Host
+| convert ctime("Last Updated")
+| sort - Current
+| eval Average=round(Average, 2)
+| eval Peak=round(Peak, 2)
+| eval Current=round(Current, 2)
+
+
+9.1.2.2.2.2
+index=perfmon object="Processor" | stats count by instance | sort +
+instance
+
+9.1.2.2.2.3
+index=perfmon object="Processor" | stats count by counter| sort + counter
+
+
+9.1.2.2.3.1
+<nav search_view="search" color="#505153">
+<collection label="OS Overviews">
+<collection label="Windows">
+<view name="sys_win_overview"/>
+<view name="sys_win_web_detail"/>
+<view name="sys_win_host_view"/>
+</collection>
+<collection label="Linux">
+<view name="sys_nix_overview"/>
+<view name="sys_nix_user_detail"/>
+<view name="sys_nix_host_view"/>
+<view name="sys_nix_top_stats"/>
+</collection>
+<collection label="Solaris">
+<view name="sys_solaris_overview"/>
+<view name="sys_solaris_host_details"/>
+</collection>
+</collection>
+<collection label="Cisco UCS">
+<view name="sys_ucs_sytem_summary"/>
+<view name="sys_ucs_lan_overview"/>
+<view name="sys_ucs_fault_overview"/>
+</collection>
+<collection label="Hadoop">
+<view name="sys_nix_hadoop_overview"/>
+<divider/>
+<collection label="Status">
+<view name="sys_nix_hadoop_user_load_nondata"/>
+<view name="sys_nix_hadoop_edge_view"/>
+<view name="sys_nix_hadoop_mapr_cluster_status"/>
+<view name="sys_nix_hadoop_mapr_node_status"/>
+<view name="sys_nix_hadoop_mapr_job_status"/>
+</collection>
+<collection label="Details">
+<view name="sys_nix_hadoop_host_detail"/>
+<view name="sys_nix_hadoop_mapr_job_detail"/>
+<view name="sys_nix_hadoop_mapr_job_history"/>
+<view name="sys_nix_hadoop_yarn_job_list"/>
+</collection>
+<collection label="Apps">
+<view name="sys_nix_hadoop_compass_summary_view"/>
+</collection>
+<collection label="Leadership">
+<view name="sys_nix_hadoop_user_command_history"/>
+</collection>
+</collection>
+<collection label="Nagios">
+<view name="sys_nix_nagios_alert_monitoring"/>
+<view name="sys_nix_nagios_notification_monitoring"/>
+</collection>
+<collection label="SAS">
+<view name="sys_nix_sas_grid"/>
+<view name="sys_nix_sas_top_stats"/>
+<view name="sys_nix_sas_job_count_by_state"/>
+<view name="sys_nix_sas_heatmaps"/>
+<view name="sys_nix_sas_quick_view"/>
+</collection>
+<collection label="SCOM">
+<view name="sys_win_scom_alert_monitoring"/>
+</collection>
+<collection label="Web Systems">
+<view name="sys_win_web_overview"/>
+<view name="sys_win_web_services"/>
+</collection>
+<collection label="SQL">
+<view name="sys_windows_sql_overview"/>
+<view name="sys_win_sql_database_list"/>
+<view name="sys_win_sql_instances"/>
+<view name="sys_win_sql_missing_indices"/>
+<view name="sys_win_sql_underused_indices"/>
+</collection>
+<collection label="Storage">
+<view name="sys_nix_storage_overview"/>
+<divider/>
+<collection label="EMC">
+<collection label="Summary">
+<view name="sys_nix_storage_emc_cluster_summary"/>
+<view name="sys_nix_storage_emc_volumes_summary"/>
+<view name="sys_nix_storage_emc_initiators_summary"/>
+<view name="sys_nix_storage_emc_targets_summary"/>
+</collection>
+<collection label="Performance">
+<view name="sys_nix_storage_emc_cluster_performance"/>
+<view name="sys_nix_storage_emc_volume_performance"/>
+<view name="sys_nix_storage_emc_initiators_performance"/>
+<view name="sys_nix_storage_emc_target_performance"/>
+</collection>
+</collection>
+<divider/>
+<view name="sys_nix_storage_emc_events"/>
+</collection>
+<collection label="WAS">
+<view name="sys_win_jvm_was_overview"/>
+<view name="sys_win_jvm_web_details"/>
+</collection>
+<collection label="Statistics">
+<view name="sys_nix_hadoop_mapr_statistics"/>
+<view name="sys_nix_sas_statistics"/>
+<view name="sys_win_statistics"/>
+</collection>
+<view name="reports" />
+<view name="alerts" />
+<view name="dashboards"/>
+<view name="search" default='true'/>
+</nav>

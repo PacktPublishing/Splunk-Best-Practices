@@ -1,0 +1,107 @@
+Chapter 5:
+5.2.8.1.1
+index=nix sourcetype=cpucpu=all | evalpctCPU=(100 - pctIdle) | stats
+avg(pctCPU) as cpu by host
+
+
+5.2.8.1.2
+index=nix sourcetype=cpucpu=all | evalpctCPU=(100 - pctIdle) | stats
+avg(pctCPU) as cpu by host | where cpu>90
+
+5.2.8.1.3
+index=nix sourcetype=cpucpu=all startminutesago=30
+| evalpctCPU=(100 - pctIdle)
+| eval severity=case(pctCPU>=90, "Critical", pctCPU>=70, "Warning",
+pctCPU>=0, "Normal")
+| where severity="Critical"
+| stats avg(pctCPU) as cpu count by host severity
+
+5.2.8.1.4
+index=nix sourcetype=cpucpu=all startminutesago=30
+| evalpctCPU=(100 - pctIdle)
+| eval severity=case(pctCPU>=90, "Critical", pctCPU>=70, "Warning",
+pctCPU>=0, "Normal")
+| where severity="Critical"
+| stats avg(pctCPU) as cpu count by host severity
+| where count>30
+
+5.2.8.1.5
+index=nix sourcetype=cpucpu=all
+| evalpctCPU=(100 - pctIdle)
+| eval severity=case(pctCPU>=90, "Critical", pctCPU>=70, "Warning",
+pctCPU>=0, "Normal")
+| where severity="Normal"
+| stats avg(pctCPU) as cpu count by host severity
+| eval host="myHost"
+| where count>30
+| evalcpu=round(cpu,1)
+| sort - cpu
+| evalcpu=(cpu + "%")
+| fields - count
+
+5.3.1
+
+import sys
+import splunk.Intersplunk
+import subprocess
+import logging
+import os
+# System logging
+logger = logging.getLogger('testssh')
+hdlr = logging.FileHandler('/tmp/testssh.txt')
+formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+hdlr.setFormatter(formatter)
+logger.addHandler(hdlr)
+logger.setLevel(logging.INFO)
+try:
+keywords,options = splunk.Intersplunk.getKeywordsAndOptions() # Get all the
+options passed
+# Check for passed parameters
+if not options.has_key('host'):
+splunk.Intersplunk.generateErrorResults("no host specified")
+exit(0)
+if not options.has_key('user'):
+splunk.Intersplunk.generateErrorResults("no user specified")
+exit(0)
+Alerting
+[ 19 ]
+if not options.has_key('command'):
+splunk.Intersplunk.generateErrorResults("no pids specified")
+exit(0)
+command = options.get('command', None)
+host = options.get('host', None)
+user = options.get('user', None)
+results,dummy,settings = splunk.Intersplunk.getOrganizedResults()
+for r in results:
+try:
+# Call the script passing all the necessary arguments
+p = subprocess.Popen(["ssh","-i","/ /home/user1/.ssh/id_rsa","-
+q","-t","-t",r[user]+"@"+r[host],r[command]],stdin=subprocess.PIPE,
+stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+# Get the output from script and push it to new output column
+out,err = p.communicate()
+#logger.info(out.decode("utf-8"))
+r["output"]= out.decode("utf-8")
+r["error"]=err
+r["return_code"]=p.returncode;
+except ValueError, e:
+results = splunk.Intersplunk.generateErrorResults(str(e))
+except OSError, e:
+results = splunk.Intersplunk.generateErrorResults(str(e))
+#Output results back to Splunk
+splunk.Intersplunk.outputResults(results)
+except Exception, e:
+results = splunk.Intersplunk.generateErrorResults(str(e))
+
+5.3.2
+[remote_call]
+filename = remote.py
+streaming = true
+
+5.3.3
+eventtype=myService_failure
+| stats eventcount by host user command pid
+| eval command="/usr/local/bin/sudokill ".pid
+| where count<30
+| sort - count
+| remote_call host=host user=user command=command

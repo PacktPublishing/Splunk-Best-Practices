@@ -1,0 +1,22 @@
+Chapter 7:
+
+7.1.2.1
+index=nix sourcetype=df
+| stats avg(PercentUsedSpace) AS pctSpace by mount host
+| eval pctSpace=round(pctSpace)
+
+7.1.2.2
+index=nix sourcetype=df
+| stats avg(PercentUsedSpace) AS pctSpace by mount host
+| eval pctSpace=round(pctSpace)
+| where pctSpace > 90
+| sort - pctSpace
+
+
+
+7.1.4.1
+index=os sourcetype=cpu cpu=all | eval cpu=(100 - pctIdle) | timechart avg(cpu) by host
+
+7.1.4.2
+index=nix sourcetype=freeMem | eval mem=(realfreeMem / totMemory) * 100 |
+timechart avg(mem) by host

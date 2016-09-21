@@ -1,0 +1,59 @@
+Chapter 10
+10.3.2.1
+[tcpout]
+forceTimebasedAutoLB = true
+autoLB = true
+indexAndForward = false
+[tcpout:dmz_perfmon]
+server = 10.10.10.20:9902, 10.10.10.21:9902, 10.10.10.22:9902,
+10.10.10.23:9902, 10.10.10.24:9902
+[tcpout:dmz_nix]
+server = 10.10.10.20:9904, 10.10.10.21:9904, 10.10.10.22:9904,
+10.10.10.23:9904, 10.10.10.24:9904
+
+
+10.3.2.2
+[perfmon://CPU]
+_TCP_ROUTING = dmz_perfmon
+counters = *
+disabled = 0
+instances = *
+interval = 60
+object = Processor
+useEnglishOnly=true
+
+
+10.3.2.3
+[monitor:///var/log/]
+_TCP_ROUTING = dmz_nix
+whitelist=(messages|secure|auth|mesg$|cron$|acpid$)
+blacklist=(lastlog|anaconda\.syslog)
+disabled = 0
+
+
+10.3.3.1
+[tcpout]
+defaultGroup = primaryDC
+forceTimebasedAutoLB = true
+autoLB = true
+indexAndForward = false
+[tcpout:primaryDC]
+server = primaryIDX1:9997, primaryIDX2:9997, primaryIDX3:9997,
+primaryIDX4:9997, primaryIDX5:9997, primaryIDX7:9997, primaryIDX8:9997,
+primaryIDX9:9997, primaryIDX10:9997
+[tcpoutput:DRDC]
+server = drIDX1:9997, drIDX2:9997, drIDX3:9997, drIDX4:9997, drIDX5:9997,
+drIDX6:9997, drIDX7:9997, drIDX8:9997, drIDX9:9997, drIDX10:9997
+[tcpoutput:applicationDEV]
+server = server1:9997, server2:9997, server3:9997, server4:9997,
+server5:9997
+
+10.3.3.2
+[tcp://9902]
+_TCP_ROUTING = primaryDC,applicationDEV
+sourcetype = perfmon
+index = perfmon
+[tcp://9904]
+_TCP_ROUTING = primaryDC,applicationDEV
+sourcetype = syslog
+index = nix

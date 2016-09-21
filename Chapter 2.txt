@@ -1,0 +1,100 @@
+Chapter 2:
+2.2.3.4.1
+
+SERVERNAME=`uname -n | awk -F "." '{ print $1 }'`
+CLUSTER=`cat /etc/profile | grep PS1 | grep -oP '\[\(\K[^\)]+'`
+PROC_COUNT=`cat /proc/cpuinfo | grep processor | wc -l`
+SOCKETS=`cat /proc/cpuinfo | egrep 'physical id' | sort -u | wc -l`
+CORES=`cat /proc/cpuinfo | egrep 'cpu cores' | sort -u | awk '{ print $4}'`
+UPTIME=` uptime |awk '{print $3" "$4" "$5}'`
+MEMKB=`cat /proc/meminfo | grep MemTotal | awk '{ print $2 }'`
+MEMORY=`expr $MEMKB / 1048576`
+OS=`uname -s`
+OSVERSION=`cat /etc/redhat-release |awk '{print $0}'`
+KERNAL=`uname -a | awk '{ print \$3 }'`
+OS_MANUFACTURER=`cat /etc/redhat-release |awk '{print $1" "$2}'`
+SERIAL_NUMBER=`dmidecode -s system-serial-number`
+SERVER_TYPE=''
+if [[ $SERIAL_NUMBER =~ ^VMwa ]]; then
+SERVER_TYPE="Virtual"
+else SERVER_TYPE="Physical"
+fi
+SPEED=`cat /proc/cpuinfo | grep MHz | tail -1 | awk '{ print $4 }'`
+CPU_TYPE=`cat /proc/cpuinfo | grep '^model name' | awk -F: '{ print $2 }' | tail -1`
+DISKS=`lsblk -ibo KNAME,TYPE,SIZE,MODEL | grep disk | wc -l`
+MODEL=`lshal | grep -i 'system.hardware.product' | awk -F' '{ print $2 }'`
+MANUFACTURER=`lshal | grep -i 'system.hardware.vendor' | awk -F' '{ print $2 }'`
+#NIC=`/sbin/ifconfig -a |grep -i -B 3 "UP" |grep -i "HWaddr"| awk '{print $1}'`
+#MAC_ADDR=`/sbin/ifconfig -a |grep -i -B 3 "UP" |grep -i "HWaddr"| awk '{print $5}'`
+INSTALL_DATE=`ls -l /root/install.log |awk '{print $6, $7, $8}'`
+#IP_ADDR=`hostname -i |awk '{print \$0}'`
+TIMESTAMP=`date +"%F %T %Z"`
+
+echo -n "$TIMESTAMP | cluster=$CLUSTER | serverName=$SERVERNAME | serverType=$SERVER_TYPE | procCount=$PROC_COUNT | sockets=$SOCKETS | cores=$CORES | uptime="$UPTIME" | memory=$MEMORY | os=$OS | osVersion="$OSVERSION" | kernalVersion=$KERNAL | osManufacturer="$OS_MANUFACTURER" | SN="$SERIAL_NUMBER" | cpuSpeed=$SPEED | cpuType="$CPU_TYPE" | diskCount=$DISKS | model="$MODEL" | manufacurer="$MANUFACTURER" | installDate="$INSTALL_DATE" | " 
+
+
+2.2.1.6.1
+[WinEventLog://Application]
+disabled = 0
+start_from = oldest
+current_only = 0
+checkpointInterval = 10
+index = yourIndexName
+renderXml=false
+
+
+[perfmon://CPU]
+counters = % Processor Time; % User Time; % Privileged Time;
+Interrupts/sec; % DPC Time; % Interrupt Time; DPCs Queued/sec; DPC Rate; %
+Idle Time; % C1 Time; % C2 Time; % C3 Time; C1 Transitions/sec; C2
+Transitions/sec; C3 Transitions/sec
+disabled = 0
+instances = *
+interval = 30
+object = Processor
+useEnglishOnly=true
+index = yourIndexName
+
+
+2.3.1
+
+[global]
+disabled = false
+repositoryLocation = $SPLUNK_HOME/etc/deployment-apps
+restartSplunkd = true
+whitelist.0 = *
+
+2.3.1.2
+[deployment-client]
+disabled = false
+clientName = MyLinuxEnvironment
+[target-broker:deploymentServer]
+targetUri = mydeploymentserver.com:8089
+
+
+2.3.1.3
+[script://./bin/inventory.sh]
+interval = 604800
+sourcetype = linux_inventory
+source = inventory.sh
+index = main
+disabled = 0
+
+2.3.1.4
+[tcpout:myIndexer]
+server = 10.10.10.10:9997
+
+
+
+2.3.1.5
+[serverClass:Linux]
+whitelist.0 = MyLinuxEnvironment
+[serverClass:Linux:app:MyLinuxApp]
+
+
+2.3.1.2.1
+[monitor:///opt/mapr-*/logs/*.log]
+crcSalt = <SOURCE>
+sourcetype = Hadoop_jobtrackerlogs
+index = hadoop_joblogs
+disabled = 0

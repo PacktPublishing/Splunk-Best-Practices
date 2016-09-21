@@ -1,0 +1,99 @@
+Chapter 6:
+
+6.1.1.5.1
+index=access_combined sourcetype=iis
+
+6.1.1.5.2
+index=access_combined sourcetype=iis | fields host cs_host time_taken cs_ip
+sc_ip User
+
+6.1.2.1
+index=access_combined sourcetype=iis host!=host1 host!=host5 | fields host
+cs_host time_taken cs_ip sc_ip User
+
+6.1.2.1
+index=access_combined sourcetype=iis host=host2 OR host=host2 OR host=host3
+| fields host cs_host time_taken cs_ip sc_ip User
+
+6.2.1.1
+index=network sourcetype=fw | stats count by service | sort - count | head
+10
+
+6.3.1.1.1
+index=nix sourcetype=cpu cpu=all host=myHost1
+
+6.3.1.1.2
+index=nix sourcetype=freeMem host=myHost
+
+6.3.1.1.3
+index=nix (sourcetype=cpu cpu=all host=myHost OR (sourcetype=freeMem
+host=myHost
+
+
+6.3.1.1.4
+index=nix (sourcetype=cpu cpu=all host=myHost OR (sourcetype=freeMem
+host=myHost | eval cpu=(100 - pctIdle) | eval mem=((realusedMem /
+totMemory) * 100) | timechart avg(cpu) as cpu, avg(mem) as mem
+
+
+6.3.1.2.1
+index=bi_data sourcetype=transact action=commit | chart count by catdesc
+dstcountry
+
+6.3.1.2.2
+index=bi_data sourcetype=transact action=commit | chart count by catdesc
+dstcountry | where count > 10
+
+6.3.1.2.3
+index=bi_data sourcetype=transact action=commit
+| stats count by catdesc dstcountry
+| where count > 10
+| xyseries catdesc dstcounrty count
+| fillnull value="-"
+
+
+6.3.1.3.1.1
+index=bi_data sourcetype=transact action=commit dstcounrty="United States"
+| timechart count by dstcountry
+
+6.3.1.3.1.2
+index=bi_data sourcetype=transact action=commit dstcountry="United States"
+| timechart count by dstcountry
+| append [search index=bi_data sourcetype=transact action=commit
+dstcountry="Ireland"
+| timechart count by dstcountry]
+
+6.3.1.3.1.3
+index=bi_data sourcetype=transact action=commit dstcountry="United States"
+| timechart count by dstcountry
+| append [search index=bi_data sourcetype=transact action=commit
+dstcountry="Ireland"
+| timechart count by dstcountry]
+| timechart first(*) as *
+
+6.3.1.3.2.1
+index=bi_data sourcetype=transact action=commit earliest=-1h@h latest=@h
+| stats count as "Last Hour" by dstcountry
+| append [search index=bi_data sourcetype=transact action=commit
+earliest=-15m@m latest=@m
+| stats count as "Last 15 Minutes" by dstcountry]
+| stats first(*) as * by dstcountry
+| table dstcountry "Last Hour" "Last 15 Minutes"
+
+
+6.3.1.3.2.2
+index=bi_data sourcetype=transact action=commit earliest=-1h@h latest=@h
+| stats count as "Last Hour" by dstcountry
+| appendcols [search index=bi_data sourcetype=transact action=commit
+earliest=-15m@m latest=@m
+| stats count as "Last 15 Minutes" by dstcountry]
+
+
+6.1.3.4.1
+index=bi_data sourcetype=transact action=commit earliest=-24h@h latest=@h
+| timechart span=1h count as "Transactions Today"
+| appendcols [search index=bi_data sourcetype=transact action=commit
+earliest=-48h@h latest=-24h@h
+| timechart span=1h count as "Transactions Yesterday"]
+| rename _time as hour
+| eval hour=strftime(hour, "%H")

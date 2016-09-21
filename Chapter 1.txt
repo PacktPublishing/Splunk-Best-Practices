@@ -1,0 +1,24 @@
+Chapter 1: 
+1.2.1.2.1
+[myLinuxScript_fields]
+REGEX = [^ ]+\s\w+\s+(all)\s+([^ ]+)\s+([^ ]+)\s+([^ ]+)\s+([^ ]+)\s+([^]+)\s+([^ ]+)
+FORMAT = cpu::$1 pctUser::$2 pctNice::$3 pctSys::$4 pctIOwait::$5 pctSteal::$6 pctIdle::$7
+
+
+1.2.1.2.2
+[mySourcetype]
+REPORT-fields = myLinuxScript_fields
+
+1.2.3.2.1
+[myUnstructured]
+DATETIME_CONFIG =
+NO_BINARY_CHECK = true
+category = Custom
+pulldown_type = true
+
+1.2.3.2.2
+[web_frontend]
+DATETIME_CONFIG =
+NO_BINARY_CHECK = true
+category = Custom
+pulldown_type = true

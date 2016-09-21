@@ -1,0 +1,1 @@
+The book is for web developers, PHP consultants, and anyone who is working on multiple projects with PHP. Basic knowledge of PHP programming is assumed.

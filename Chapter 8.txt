@@ -1,0 +1,191 @@
+Chapter 8:
+
+8.1.3.1
+<chart>
+<title>Top Destination IP</title>
+<search>
+<query>eventtype=netscaler TCP $dst_ip$ $src_ip$ | top
+dest_ip</query>
+</search>
+<option name="charting.chart">pie</option>
+</chart>
+<chart>
+<title>Top Destination Port</title>
+<search>
+<query>eventtype=netscaler TCP $dst_ip$ $dst_port$ $src_ip$ | top
+dest_port</query>
+</search>
+<option name="charting.chart">pie</option>
+<option name="charting.legend.placement">bottom</option>
+</chart>
+<chart>
+<title>Top Source IP</title>
+<search>
+<query>eventtype=netscaler TCP $dst_ip$ $src_ip$ | top
+src_ip</query>
+</search>
+<option name="charting.chart">pie</option>
+<option name="charting.legend.placement">bottom</option>
+</chart>
+
+8.1.3.1.1
+<form>
+<!-- Global search to populate everything in the panel -->
+<search id="baseSearch">
+<query>eventtype=netscaler TCP | fields _time src_ip dest_ip
+src_port dest_port</query>
+<earliest>-1h@h</earliest>
+<latest>@h</latest>
+</search>
+
+8.1.3.2.1
+<chart>
+<title>Top Destination IP</title>
+<search base="baseSearch">
+<query>search $dst_ip$ $src_ip$ | top dest_ip</query>
+</search>
+<option name="charting.chart">pie</option>
+</chart>
+<chart>
+<title>Top Destination Port</title>
+<search base="baseSearch">
+<query>search $dst_ip$ $dst_port$ $src_ip$ | top dest_port</query>
+</search>
+<option name="charting.chart">pie</option>
+<option name="charting.legend.placement">bottom</option>
+</chart>
+<chart>
+<title>Top Source IP</title>
+<search base="baseSearch">
+<query>search $dst_ip$ $src_ip$ | top src_ip</query>
+</search>
+<option name="charting.chart">pie</option>
+<option name="charting.legend.placement">bottom</option>
+</chart>
+
+
+8.1.4.1
+eventtype=netscaler TCP dest_ip="*" src_ip="*" | bin _time span=5m | eval
+tbrmb=Total_bytes_recv/(1024*1024*1024)| eval
+tbsmb=Total_bytes_send/(1024*1024*1024)
+
+
+8.1.4.2
+<search id="throughput" ref="netscaler:loadbalancer:throughput" />
+<row>
+<chart>
+<title>Total Gigabytes</title>
+<search base="throughput">
+</search>
+<option name="charting.chart">area</option>
+<option name="charting.legend.placement">bottom</option>
+<option name="charting.primaryAxisTitle.text">Time</option>
+<option name="charting.secondaryAxisTitle.text">MegaBytes</option>
+<option
+name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</opti
+on>
+<option
+name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+<option name="charting.axisTitleX.visibility">visible</option>
+<option name="charting.axisTitleY.visibility">visible</option>
+<option name="charting.axisTitleY2.visibility">visible</option>
+<option name="charting.axisX.scale">linear</option>
+<option name="charting.axisY.scale">linear</option>
+<option name="charting.axisY2.enabled">false</option>
+<option name="charting.axisY2.scale">inherit</option>
+<option name="charting.chart.bubbleMaximumSize">50</option>
+<option name="charting.chart.bubbleMinimumSize">10</option>
+<option name="charting.chart.bubbleSizeBy">area</option>
+<option name="charting.chart.nullValueMode">gaps</option>
+<option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+<option name="charting.chart.stackMode">default</option>
+<option name="charting.chart.style">shiny</option>
+<option name="charting.drilldown">all</option>
+<option name="charting.layout.splitSeries">0</option>
+<option
+name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+</chart>
+</row>
+
+8.1.4.2
+<search id="throughput" ref="netscaler:loadbalancer:throughput"></search>
+<row>
+<chart>
+<title>Total Gigabytes</title>
+<search base="throughput">
+<query>| search $src_ip$ $dst_ip$ | timechart sum(tbrmb) as
+Gigabytes_received sum(tbsmb) as Gigabytes_sent</query>
+</search>
+
+
+8.3.1.1
+### LINUX OS INPUTS
+[script://./bin/vmstat.sh]
+interval = 60
+sourcetype = vmstat
+source = vmstat
+index = imdos
+disabled = 0
+### HADOOP INPUTS
+[monitor:///opt/mapr/hadoop/hadoop-*/logs/*historyserver*]
+sourcetype = hadoop_historyserver
+index = hadoopmon_metrics
+disabled = 0
+[monitor:///opt/mapr/hadoop/hadoop-*/logs/*nodemanager*]
+sourcetype = hadoop_nodemanager
+index = hadoopmon_metrics
+disabled = 0
+[monitor:///opt/mapr/hadoop/hadoop-*/logs/*resourcemanager*]
+sourcetype = hadoop_resourcemanager
+index = hadoopmon_metrics
+disabled = 0
+### Web Logs - Apache Tomcat
+[monitor:///opt/tomcat/logs/catalina.out]
+disabled = 0
+sourcetype = hadoop:tomcat:catalina
+index = hadoopmon_web
+[monitor:///opt/tomcat/logs/localhost.*]
+disabled = 0
+sourcetype = hadoop:tomcat:app
+index = hadoopmon_web
+
+
+8.3.2.1
+### RSA SecurID Settings ###
+[rsa:syslog]
+TRANSFORMS-runtime = rsa_runtime
+TRANSFORMS-system = rsa_system
+TRANSFORMS-admin = rsa_admin
+LINE_BREAKER = ([\n\r]+)\w{3}\s+\d{2}\s\d{2}:\d{2}:\d{2}\s+
+MAX_TIMESTAMP_LOOKAHEAD = 19
+SHOULD_LINEMERGE = false
+TIME_PREFIX = ^
+### DNS Settings ###
+[MSAD:NT6:DNS]
+BREAK_ONLY_BEFORE_DATE = true
+TRANSFORMS-filter1 = dns_filter_local
+TRANSFORMS-filter2 = dns_filter_internal
+TRANSFORMS-filter3 = dns_filter_wpad
+TRANSFORMS-fields = answer_section_field
+### Syslog Settings ###
+[syslog_pool]
+TRANSFORMS-wips = wips_events
+The following is the contents of Transforms.conf:
+### Cisco WIPS Events ###
+[wips_events]
+REGEX = WIPS
+DEST_KEY = _MetaData:Index
+FORMAT = network
+### DNS Event Filtering ###
+[dns_filter_local]
+REGEX = \.local
+DEST_KEY = queue
+FORMAT = nullQueue
+[dns_filter_internal]
+REGEX = 10\.78
+DEST_KEY = queue
+FORMAT = nullQueue
+[dns_filter_wpad]
+REGEX = brq_int
+DEST_KEY = queue
+FORMAT = nullQueue

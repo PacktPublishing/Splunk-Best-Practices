@@ -1,26 +1,23 @@
-# BookName
-By Packt Publishing
+# Splunk Best Practices
+By Packt
 
 
-
-This is the code repository for [BookName](Packt Publishing link of the book), published by [Packt Publishing](https://www.packtpub.com/). It contains all the required files to run the code.
-
+This is the code repository for [Splunk Best Practices](https://www.packtpub.com/big-data-and-business-intelligence/splunk-best-practices?utm_source=github&utm_medium=repository&utm_campaign=9781785281396), published by [Packt Publishing](https://www.packtpub.com/). It contains all the required files to run the code.
 
 
-Replace this with "Who this book is for?" from preface
-
-NOTE:If there exists a file named ZippedFileList.txt, it contains the list of files that have been compressed. In order to  run the code sucessfully you need to extract these files in that directory itself.
-
-
-Related Books
+The book is for web developers, PHP consultants, and anyone who is working on multiple projects with PHP. Basic knowledge of PHP programming is assumed.
+ 
+ ###Software Requirement
+You will need at least a distributed deployment of an on prem installation of Splunk for this book, collecting both Linux and Windows information, and a heavy forwarder as well. We will use all of these pieces to show you techniques to add value.
 
 
+###Related Books
 
-*[RelatedBookName](Book link generated using URL builder at https://support.google.com/analytics/answer/1033867?hl=en)
+* [Mastering Splunk](https://www.packtpub.com/big-data-and-business-intelligence/mastering-splunk?utm_source=github&utm_medium=repository&utm_campaign=9781782173830)
 
+* [Splunk Operational Intelligence Cookbook](https://www.packtpub.com/big-data-and-business-intelligence/splunk-operational-intelligence-cookbook?utm_source=github&utm_medium=repository&utm_campaign=9781849697842)
 
-*[RelatedBookName](Book link generated using URL builder at https://support.google.com/analytics/answer/1033867?hl=en)
+* [Implementing Splunk: Big Data Reporting and Development for Operational Intelligence](https://www.packtpub.com/big-data-and-business-intelligence/implementing-splunk-big-data-reporting-and-development-operationa?utm_source=github&utm_medium=repository&utm_campaign=9781849693288)
 
-*[RelatedBookName](Book link generated using URL builder at https://support.google.com/analytics/answer/1033867?hl=en)
-
-
+###Suggestions and Feedback
+ [Click here](https://docs.google.com/forms/d/e/1FAIpQLSe5qwunkGf6PUvzPirPDtuy1Du5Rlzew23UBp2S-P3wB-GcwQ/viewform) if you have any feedback or suggestions.

@@ -7,7 +7,7 @@ This is the code repository for [Splunk Best Practices](https://www.packtpub.com
 
 The book is for web developers, PHP consultants, and anyone who is working on multiple projects with PHP. Basic knowledge of PHP programming is assumed.
  
- ###Software Requirement
+###Software Requirements
 You will need at least a distributed deployment of an on prem installation of Splunk for this book, collecting both Linux and Windows information, and a heavy forwarder as well. We will use all of these pieces to show you techniques to add value.
 
 

@@ -1,5 +1,4 @@
 # Splunk Best Practices
-By Packt
 
 
 This is the code repository for [Splunk Best Practices](https://www.packtpub.com/big-data-and-business-intelligence/splunk-best-practices?utm_source=github&utm_medium=repository&utm_campaign=9781785281396), published by [Packt Publishing](https://www.packtpub.com/). It contains all the required files to run the code.
@@ -7,11 +6,11 @@ This is the code repository for [Splunk Best Practices](https://www.packtpub.com
 
 This book is for administrators, developers, and search ninjas who have been using Splunk for some time. A comprehensive coverage makes this book great for Splunk veterans and newbies alike.
  
-###Software Requirements
+##Software Requirements
 You will need at least a distributed deployment of an on prem installation of Splunk for this book, collecting both Linux and Windows information, and a heavy forwarder as well. We will use all of these pieces to show you techniques to add value.
 
 
-###Related Books
+##Related Books
 
 * [Mastering Splunk](https://www.packtpub.com/big-data-and-business-intelligence/mastering-splunk?utm_source=github&utm_medium=repository&utm_campaign=9781782173830)
 
